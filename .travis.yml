@@ -1,0 +1,27 @@
+# Documentation: http://docs.travis-ci.com/user/languages/julia/
+language: julia
+sudo: required
+dist: trusty
+os:
+  - linux
+julia:
+  - 0.6
+  - nightly
+matrix:
+  allow_failures:
+    - julia: nightly
+notifications:
+  email: false
+addons:
+  apt:
+    packages:
+      - xvfb
+      - libgtk-3-0
+# uncomment the following lines to override the default test script
+script:
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - xvfb-run julia -e 'include("cibuild.jl")'
+
+after_success:
+  - julia -e 'include("cicoverage.jl")'
+
